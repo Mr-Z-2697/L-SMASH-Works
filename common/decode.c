@@ -220,6 +220,11 @@ int decode_video_packet
          && ret != AVERROR( EAGAIN ) )  /* Must receive output frames before sending new packets if true. */
             return ret;
     }
+    while ( ret == AVERROR( EAGAIN ) )
+    {
+        ret = avcodec_receive_frame( ctx, av_frame );
+        ret = avcodec_send_packet( ctx, pkt );
+    }
     ret = avcodec_receive_frame( ctx, av_frame );
     if( ret < 0
      && ret != AVERROR( EAGAIN )    /* Must send new packets before receiving frames if true. */
